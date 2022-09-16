@@ -24,16 +24,6 @@ def modifiedDate(path:chr) -> chr:
 def rightPosition(text:chr, width:int) -> int:
     return width - len(text)
 
-def removingWhitespaces(text):
-     return re.sub(r"^\s+","",text)
-
-def removingColumnsWhitespaces(data:list) -> list:
-    i = 0
-    temp_list = []
-    for column in data:
-        temp_list.append(removingWhitespaces(column))
-        i+=1
-    return temp_list
 #columns width should follow by maximum lenght char of columns Note: will fix soon
 def optimizeWidth(array_data:list) -> list:
     """optimize column width function"""
@@ -43,6 +33,8 @@ def optimizeWidth(array_data:list) -> list:
         maxi.append(len(max(temp[i], key = len)))
     return maxi
     
+def reloadcolumns(stdscr):
+    pass
 
 def main(stdscr):
     #Header
