@@ -35,14 +35,12 @@ def removingColumnsWhitespaces(data:list) -> list:
         i+=1
     return temp_list
 #columns width should follow by maximum lenght char of columns Note: will fix soon
-def columnWidth(array_data:list) -> int:
+def optimizeWidth(array_data:list) -> list:
+    """optimize column width function"""
     maxi = []
-    col_max = []
-    for i in range(array_data.shape[1]):
-        col_max = []
-        for j in range(array_data.shape[0]):
-            col_max.append(len(str(array_data[j, i])))
-        maxi.append(max(col_max))
+    temp = np.transpose(array_data)
+    for i in range(temp.shape[0]):
+        maxi.append(len(max(temp[i], key = len)))
     return maxi
     
 
@@ -71,7 +69,7 @@ def main(stdscr):
     pad = curses.newpad(height, width)
     stdscr.refresh()
     #show all columns 
-    maximun_each_columns = columnWidth(array_data)
+    maximun_each_columns = optimizeWidth(array_data)
 
     block_lenght = width//len(str(maximun_each_columns))
     
