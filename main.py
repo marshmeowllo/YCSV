@@ -3,7 +3,6 @@ import time
 import curses
 from curses import wrapper
 import pandas as pd
-import re
 import numpy as np
 import sys
 
@@ -35,17 +34,17 @@ def columnWidth(array_data:list) -> int:
         maxi.append(max(col_max))
     return maxi
 
-def downData(stdscr, width, height, text):
-    q = "Press \"any key\" to quit"
-    stdscr.addstr(height - 2, rightPosition(q, width), q, text)
-    stdscr.addstr(height - 2, 1, f"Height :{height} Width :{width}", text)
+def downData(stdscr, width:int, height:int, text:chr):
+    normal_text = curses.color_pair(3)
+    stdscr.addstr(height - 2, rightPosition(text, width), text, normal_text)
+    stdscr.addstr(height - 2, 1, f"Height :{height} Width :{width}", normal_text)
     stdscr.refresh()
     stdscr.getch()
 
-def updateData(stdscr, array_data, width, maximun_each_columns, start, stop):
+def updateData(stdscr, array_data:list, width:int, maximun_each_columns:list, start:int, stop:int):
     success = curses.color_pair(1)
     warning = curses.color_pair(2)
-    text = curses.color_pair(3)
+    normal_text = curses.color_pair(3)
     tab = 0
     data = 0
     size = array_data.shape
@@ -59,9 +58,9 @@ def updateData(stdscr, array_data, width, maximun_each_columns, start, stop):
                 tab += maximun_each_columns[column] - len(str(data))
                 stdscr.addstr(6 + row, mid_screen + tab , f"{data}", success)
             else:
-                stdscr.addstr(6 + row, mid_screen + tab , " " * (maximun_each_columns[column] - len(str(data))), text)
+                stdscr.addstr(6 + row, mid_screen + tab , " " * (maximun_each_columns[column] - len(str(data))), normal_text)
                 tab += maximun_each_columns[column] - len(str(data))
-                stdscr.addstr(6 + row, mid_screen + tab , f"{data}", text)
+                stdscr.addstr(6 + row, mid_screen + tab , f"{data}", normal_text)
             tab += len(str(data)) + 1
             stdscr.refresh()
             
@@ -71,7 +70,7 @@ def main(stdscr):
     global height, width
     height, width = stdscr.getmaxyx()
     bar = '█'
-    path = "airtravel.csv" #https://people.sc.fsu.edu/~jburkardt/data/csv/csv.html
+    path = sys.argv[1] #https://people.sc.fsu.edu/~jburkardt/data/csv/csv.html
     title = os.path.basename(path)
     modified_date = modifiedDate(path)
     df = pd.read_csv(path, sep=',', header=None)
@@ -82,25 +81,23 @@ def main(stdscr):
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_GREEN)
     curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_RED)
     curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
-    success = curses.color_pair(1)
-    warning = curses.color_pair(2)
-    text = curses.color_pair(3)
+    normal_text = curses.color_pair(3)
 
-    stdscr.addstr(1, 1, " " * (width - 2), text)
-    stdscr.addstr(1, position, title, text)
-    stdscr.addstr(3, 1, f"last modified on: {modified_date}", text)
+    stdscr.addstr(1, 1, " " * (width - 2), normal_text)
+    stdscr.addstr(1, position, title, normal_text)
+    stdscr.addstr(3, 1, f"last modified on: {modified_date}", normal_text)
     stdscr.refresh()
     #show columns 
+    text = "Press any key to quit"
+    downData(stdscr, width, height, text)
+    
     maximun_each_columns = columnWidth(array_data)
 
     updateData(stdscr, array_data, width, maximun_each_columns, 0, 3)
     #footer
-    q = "Press \"any key\" to quit"
-    downData(stdscr, width, height, text)
 
 if __name__ == "__main__":
-    import time
-    start_time = time.time()
+
     wrapper(main)
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print(f"input {sys.argv[1]}")
 
