@@ -25,19 +25,50 @@ def rightPosition(text:chr, width:int) -> int:
     return width - len(text)
 
 #columns width should follow by maximum lenght char of columns Note: will fix soon
-def optimizeWidth(array_data:list) -> list:
-    """optimize column width function"""
+def columnWidth(array_data:list) -> int:
     maxi = []
-    temp = np.transpose(array_data)
-    for i in range(temp.shape[0]):
-        maxi.append(len(max(temp[i], key = len)))
+    col_max = []
+    for i in range(array_data.shape[1]):
+        col_max = []
+        for j in range(array_data.shape[0]):
+            col_max.append(len(str(array_data[j, i])))
+        maxi.append(max(col_max))
     return maxi
-    
-def reloadcolumns(stdscr):
-    pass
+
+def downData(stdscr, width, height, text):
+    q = "Press \"any key\" to quit"
+    stdscr.addstr(height - 2, rightPosition(q, width), q, text)
+    stdscr.addstr(height - 2, 1, f"Height :{height} Width :{width}", text)
+    stdscr.refresh()
+    stdscr.getch()
+
+def updateData(stdscr, array_data, width, maximun_each_columns, start, stop):
+    success = curses.color_pair(1)
+    warning = curses.color_pair(2)
+    text = curses.color_pair(3)
+    tab = 0
+    data = 0
+    size = array_data.shape
+    mid_screen = (width//2)-(sum(maximun_each_columns)//2)
+    for row in range(start, stop+ 1):
+        tab = 0
+        for column in range(size[1]):
+            data = array_data[row,column]
+            if row == 0:
+                stdscr.addstr(6 + row, mid_screen + tab , " " * (maximun_each_columns[column] - len(str(data))), success)
+                tab += maximun_each_columns[column] - len(str(data))
+                stdscr.addstr(6 + row, mid_screen + tab , f"{data}", success)
+            else:
+                stdscr.addstr(6 + row, mid_screen + tab , " " * (maximun_each_columns[column] - len(str(data))), text)
+                tab += maximun_each_columns[column] - len(str(data))
+                stdscr.addstr(6 + row, mid_screen + tab , f"{data}", text)
+            tab += len(str(data)) + 1
+            stdscr.refresh()
+            
 
 def main(stdscr):
     #Header
+    global height, width
     height, width = stdscr.getmaxyx()
     bar = '█'
     path = "airtravel.csv" #https://people.sc.fsu.edu/~jburkardt/data/csv/csv.html
@@ -58,41 +89,18 @@ def main(stdscr):
     stdscr.addstr(1, 1, " " * (width - 2), text)
     stdscr.addstr(1, position, title, text)
     stdscr.addstr(3, 1, f"last modified on: {modified_date}", text)
-    pad = curses.newpad(height, width)
     stdscr.refresh()
-    #show all columns 
-    maximun_each_columns = optimizeWidth(array_data)
+    #show columns 
+    maximun_each_columns = columnWidth(array_data)
 
-    block_lenght = width//len(str(maximun_each_columns))
-    
-    tab = 0
-    data = 0
-    size = array_data.shape
-    mid_screen = (width//2)-(sum(maximun_each_columns)//2)-5
-    for rowi in range(size[0]):
-        tab = 0
-        for columnj in range(size[1]):
-            
-            data = array_data[rowi,columnj]
-            if rowi == 0:
-                stdscr.addstr(6 + rowi, mid_screen + tab , " " * (maximun_each_columns[columnj] - len(str(data))), success)
-                tab += maximun_each_columns[columnj] - len(str(data))
-                stdscr.addstr(6 + rowi, mid_screen + tab , f"{data}", success)
-                tab += len(str(data)) + 1
-                stdscr.refresh()
-            else:
-                stdscr.addstr(6 + rowi, mid_screen + tab , " " * (maximun_each_columns[columnj] - len(str(data))), text)
-                tab += maximun_each_columns[columnj] - len(str(data))
-                stdscr.addstr(6 + rowi, mid_screen + tab , f"{data}", text)
-                tab += len(str(data)) + 1
-                stdscr.refresh()
-
+    updateData(stdscr, array_data, width, maximun_each_columns, 0, 3)
     #footer
     q = "Press \"any key\" to quit"
-    stdscr.addstr(height - 2, rightPosition(q, width), q, text)
-    stdscr.addstr(height - 2, 1, f"Height :{height} Width :{width}", text)
-    stdscr.refresh()
-    stdscr.getch()
+    downData(stdscr, width, height, text)
 
 if __name__ == "__main__":
+    import time
+    start_time = time.time()
     wrapper(main)
+    print("--- %s seconds ---" % (time.time() - start_time))
+
