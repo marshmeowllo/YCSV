@@ -89,11 +89,13 @@ def main(stdscr):
     stdscr.refresh()
     #show columns 
     text = "Press any key to quit"
-    downData(stdscr, width, height, text)
+    
     
     maximun_each_columns = columnWidth(array_data)
 
-    updateData(stdscr, array_data, width, maximun_each_columns, 0, 3)
+    updateData(stdscr, array_data, width, maximun_each_columns, 0, 5)
+    time.sleep(.5)
+    downData(stdscr, width, height, text)
     #footer
 
 if __name__ == "__main__":

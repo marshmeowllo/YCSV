@@ -1,0 +1,4 @@
+set origin as (0, 0)
+if aroow cursor up or right do noting or -1 
+if arrow cursor down or left +1
+yuaylong 30/10/2022
