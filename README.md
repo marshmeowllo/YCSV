@@ -19,9 +19,6 @@ YCSV - CSV in a terminal with a graphic using the curses library.
     pip install pandas
   ```
 - Curses
-  ```bash
-    pip install pandas
-  ```
 
 ## Usage
 
