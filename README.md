@@ -26,7 +26,7 @@ YCSV - CSV in a terminal with a graphic using the curses library.
 
     ```bash
     git clone https://github.com/marshmeowllo/YCSV.git
-    cd ycsv
+    cd YCSV
     ```
 
 2. Run the application by providing a CSV file path as a command-line argument:
